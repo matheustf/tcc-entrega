@@ -1,6 +1,6 @@
 package com.puc.tcc.entrega.dtos;
 
-import javax.validation.constraints.NotNull;
+import com.puc.tcc.entrega.enums.StatusDaEntrega;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class BlocoDTO {
-
-	private String id;
-
-	@NotNull()
-	private String nome;
+public class HistoricoDeEntregaDTO {
 	
+	private StatusDaEntrega statusDaEntrega;
+	
+	private String data;
+
 }

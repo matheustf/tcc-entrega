@@ -1,5 +1,7 @@
 package com.puc.tcc.entrega.dtos;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -11,16 +13,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class EntregaDoPedidoDTO {
+public class EntregaDTO {
 
 	private String id;
 
+	@NotNull()
 	private String idCliente;
 	
+	@NotNull()
+	private String idFornecedor;
+	
+	@NotNull()
 	private String idPedido;
 	
-	private String dataDeEntrega;
+	@NotNull()
+	private String estimativaDeEntrega;
 	
-	private StatusPedido statusDoPedido;
+	private String statusDaEntrega;
+	
+	private List<HistoricoDeEntregaDTO> historicoDeEntrega;
 	
 }

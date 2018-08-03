@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.puc.tcc.entrega.dtos.BaseDTO;
-import com.puc.tcc.entrega.exceptions.VendaException;
+import com.puc.tcc.entrega.exceptions.AvaliacaoException;
+import com.puc.tcc.entrega.exceptions.EntregaException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,12 +34,18 @@ public class ExceptionAdvice {
 	}
 	
 	@ResponseBody
-	@ExceptionHandler(VendaException.class)
-	public ResponseEntity<BaseDTO> processParameterizedValidationError(VendaException ex) {
+	@ExceptionHandler(EntregaException.class)
+	public ResponseEntity<BaseDTO> processParameterizedValidationError(EntregaException ex) {
 		log.error(ex.getMessage(),ex);
 		return processError(ex.getMessage(),ex.getStatusCode());
 	}
 	
+	@ResponseBody
+	@ExceptionHandler(AvaliacaoException.class)
+	public ResponseEntity<BaseDTO> processParameterizedValidationError(AvaliacaoException ex) {
+		log.error(ex.getMessage(),ex);
+		return processError(ex.getMessage(),ex.getStatusCode());
+	}
 
 	private ResponseEntity<BaseDTO> processError(String error,HttpStatus headerStatus) {
 		BaseDTO baseDTO = new BaseDTO(headerStatus.value(),error);

@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class VendaException extends Exception {
+public class EntregaException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
