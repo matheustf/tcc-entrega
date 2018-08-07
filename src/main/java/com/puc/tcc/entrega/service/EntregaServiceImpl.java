@@ -19,6 +19,7 @@ import com.puc.tcc.entrega.enums.StatusDaEntrega;
 import com.puc.tcc.entrega.exceptions.EntregaException;
 import com.puc.tcc.entrega.model.Entrega;
 import com.puc.tcc.entrega.model.HistoricoDeEntrega;
+import com.puc.tcc.entrega.rabbitmq.RabbitMQComponent;
 import com.puc.tcc.entrega.repository.EntregaRepository;
 import com.puc.tcc.entrega.utils.Util;
 
@@ -26,10 +27,13 @@ import com.puc.tcc.entrega.utils.Util;
 public class EntregaServiceImpl implements EntregaService {
 
 	EntregaRepository entregaRepository;
+	
+	RabbitMQComponent rabbitMQComponent;
 
 	@Autowired
-	public EntregaServiceImpl(EntregaRepository entregaRepository) {
+	public EntregaServiceImpl(EntregaRepository entregaRepository, RabbitMQComponent rabbitMQComponent) {
 		this.entregaRepository = entregaRepository;
+		this.rabbitMQComponent = rabbitMQComponent;
 	}
 
 	@Override
@@ -70,6 +74,7 @@ public class EntregaServiceImpl implements EntregaService {
 		entrega.setStatusDaEntrega(statusDaEntrega);
 		
 		entregaRepository.save(entrega);
+		rabbitMQComponent.sendEntrega(entrega);
 		
 		return modelMapper().map(entrega, EntregaDTO.class);
 	}

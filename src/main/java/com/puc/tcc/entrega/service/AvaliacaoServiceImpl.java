@@ -16,6 +16,7 @@ import com.puc.tcc.entrega.consts.Constants;
 import com.puc.tcc.entrega.dtos.AvaliacaoDTO;
 import com.puc.tcc.entrega.exceptions.EntregaException;
 import com.puc.tcc.entrega.model.Avaliacao;
+import com.puc.tcc.entrega.rabbitmq.RabbitMQComponent;
 import com.puc.tcc.entrega.repository.AvaliacaoRepository;
 import com.puc.tcc.entrega.utils.Util;
 
@@ -23,10 +24,13 @@ import com.puc.tcc.entrega.utils.Util;
 public class AvaliacaoServiceImpl implements AvaliacaoService {
 
 	AvaliacaoRepository avaliacaoRepository;
+	
+	RabbitMQComponent rabbitMQComponent;
 
 	@Autowired
-	public AvaliacaoServiceImpl(AvaliacaoRepository avaliacaoRepository) {
+	public AvaliacaoServiceImpl(AvaliacaoRepository avaliacaoRepository, RabbitMQComponent rabbitMQComponent) {
 		this.avaliacaoRepository = avaliacaoRepository;
+		this.rabbitMQComponent = rabbitMQComponent;
 	}
 
 	@Override
@@ -57,6 +61,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 		avaliacao.setDataDaAvaliacao(Util.dataNow());
 		
 		avaliacaoRepository.save(avaliacao);
+		rabbitMQComponent.sendAvaliacao(avaliacao);
 		
 		return modelMapper().map(avaliacao, AvaliacaoDTO.class);
 	}

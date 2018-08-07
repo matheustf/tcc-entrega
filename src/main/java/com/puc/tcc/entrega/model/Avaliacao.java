@@ -1,5 +1,7 @@
 package com.puc.tcc.entrega.model;
 
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Avaliacao {
+public class Avaliacao implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3588012881987809662L;
 
 	private String id;
 
