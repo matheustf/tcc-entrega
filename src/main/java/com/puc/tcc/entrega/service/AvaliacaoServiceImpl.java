@@ -58,7 +58,9 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 	@Override
 	public AvaliacaoDTO incluir(AvaliacaoDTO avaliacaoDTO) {
 		Avaliacao avaliacao = modelMapper().map(avaliacaoDTO, Avaliacao.class);
+	
 		avaliacao.setDataDaAvaliacao(Util.dataNow());
+		avaliacao.setCodigoDaAvaliacao(Util.gerarCodigo("AVALIACAO",5).toUpperCase());
 		
 		avaliacaoRepository.save(avaliacao);
 		rabbitMQComponent.sendAvaliacao(avaliacao);

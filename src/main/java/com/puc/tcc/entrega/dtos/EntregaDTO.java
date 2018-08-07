@@ -20,6 +20,8 @@ public class EntregaDTO {
 	@NotNull()
 	private String idCliente;
 	
+	private String codigoDaEntrega;
+	
 	@NotNull()
 	private String idFornecedor;
 	

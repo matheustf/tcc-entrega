@@ -18,6 +18,8 @@ public class AvaliacaoDTO {
 	@NotNull()
 	private String idCliente;
 	
+	private String codigoDaAvaliacao;
+	
 	@NotNull()
 	private String idPedido;
 	

@@ -72,6 +72,7 @@ public class EntregaServiceImpl implements EntregaService {
 
 		entrega.setHistoricoDeEntrega(Arrays.asList(historico));
 		entrega.setStatusDaEntrega(statusDaEntrega);
+		entrega.setCodigoDaEntrega(Util.gerarCodigo("ENTREGA",5).toUpperCase());
 		
 		entregaRepository.save(entrega);
 		rabbitMQComponent.sendEntrega(entrega);
