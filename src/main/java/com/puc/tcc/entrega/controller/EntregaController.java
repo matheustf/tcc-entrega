@@ -30,7 +30,7 @@ public class EntregaController {
 	public EntregaController(EntregaService entregaService) {
 		this.entregaService = entregaService;
 	}
-
+	
 	@GetMapping()
 	@RequestMapping("")
 	public ResponseEntity<List<EntregaDTO>> buscarTodos() {
