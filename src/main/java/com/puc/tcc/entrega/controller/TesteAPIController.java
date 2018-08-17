@@ -10,7 +10,7 @@ public class TesteAPIController {
 	
 	@GetMapping("")
 	public ResponseEntity<String> testeAPI() {
-		return new ResponseEntity<String>("API Entrega OK", HttpStatus.OK);
+		return new ResponseEntity<String>("API Entrega 2 OK", HttpStatus.OK);
 	}
 
 
