@@ -53,13 +53,21 @@ public class AvaliacaoController {
 
 		return new ResponseEntity<AvaliacaoDTO>(avaliacaoDTO, HttpStatus.OK);
 	}
+	
+	@GetMapping("/cliente")
+	public ResponseEntity<List<AvaliacaoDTO>> consultarPorCliente(@RequestHeader(value = "x-access-token") String token) throws EntregaException, GenericException {
+		tokenValidate.tokenValidate(token);
+		
+		List<AvaliacaoDTO> avaliacoesDTO = avaliacaoService.consultarPorCliente(token);
+
+		return new ResponseEntity<List<AvaliacaoDTO>>(avaliacoesDTO, HttpStatus.OK);
+	}
 
 	@PostMapping("")
 	public ResponseEntity<AvaliacaoDTO> incluir(@RequestBody @Valid AvaliacaoDTO avaliacaoDTO, @RequestHeader(value = "x-access-token") String token) throws GenericException {
-
-		tokenValidate.tokenValidateCliente(token, avaliacaoDTO.getIdCliente());
+		tokenValidate.tokenValidate(token);
 		
-		AvaliacaoDTO responseAvaliacaoDTO = avaliacaoService.incluir(avaliacaoDTO);
+		AvaliacaoDTO responseAvaliacaoDTO = avaliacaoService.incluir(avaliacaoDTO, token);
 		return new ResponseEntity<AvaliacaoDTO>(responseAvaliacaoDTO, HttpStatus.CREATED);
 	}
 

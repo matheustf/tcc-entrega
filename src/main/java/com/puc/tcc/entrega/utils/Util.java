@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 
 import com.puc.tcc.entrega.consts.Constants;
@@ -38,23 +37,34 @@ public class Util {
 		LocalDateTime agora = LocalDateTime.now();
 		DateTimeFormatter formatador = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
 				.withLocale(new Locale("pt", "br"));
-		return agora.format(formatador); // 08/04/14 10:02
+		return agora.format(formatador);
 
 	}
 
-	public static String getIdCadastroToken(String token) throws GenericException {
+	public static String getPagameterToken(String token, String tokenParameter) throws GenericException {
 		try {
 			System.out.println(token);
 			String[] pieces = token.split("\\.");
 
 			String header = new String(DatatypeConverter.parseBase64Binary(pieces[1]), "UTF-8");
-			JSONObject json = new JSONObject(header);
 
-			return (String) json.get("idCadastro");
+			return getParameter(header, tokenParameter);
 
 		} catch (Exception e) {
 			throw new GenericException(HttpStatus.INTERNAL_SERVER_ERROR, Constants.SERVER_ERROR);
 		}
+	}
+
+	private static String getParameter(String header, String parameter) {
+		//TODO REFACTOR
+		header.indexOf(parameter);
+
+		int initial = header.lastIndexOf(parameter) + parameter.length() + 3;
+
+		header = header.substring(initial);
+		int next = header.indexOf("\"");
+		
+		return header.substring(0,next);
 	}
 
 }

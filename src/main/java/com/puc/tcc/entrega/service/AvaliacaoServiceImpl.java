@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 import com.puc.tcc.entrega.consts.Constants;
 import com.puc.tcc.entrega.dtos.AvaliacaoDTO;
 import com.puc.tcc.entrega.exceptions.EntregaException;
+import com.puc.tcc.entrega.exceptions.GenericException;
 import com.puc.tcc.entrega.model.Avaliacao;
 import com.puc.tcc.entrega.rabbitmq.RabbitMQComponent;
 import com.puc.tcc.entrega.repository.AvaliacaoRepository;
@@ -56,9 +57,10 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 	}
 
 	@Override
-	public AvaliacaoDTO incluir(AvaliacaoDTO avaliacaoDTO) {
+	public AvaliacaoDTO incluir(AvaliacaoDTO avaliacaoDTO, String token) throws GenericException {
 		Avaliacao avaliacao = modelMapper().map(avaliacaoDTO, Avaliacao.class);
-	
+		
+		avaliacao.setIdCliente(Util.getPagameterToken(token, "idCadastro"));
 		avaliacao.setDataDaAvaliacao(Util.dataNow());
 		avaliacao.setCodigoDaAvaliacao(Util.gerarCodigo("AVALIACAO",5).toUpperCase());
 		
@@ -105,5 +107,23 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 	private Avaliacao validarAvaliacao(Optional<Avaliacao> optional) throws EntregaException {
 		return Optional.ofNullable(optional).get()
 		.orElseThrow(() -> new EntregaException(HttpStatus.NOT_FOUND, Constants.ITEM_NOT_FOUND));
+	}
+	
+	private List<Avaliacao> validarAvaliacaoList(Optional<List<Avaliacao>> optional) throws EntregaException {
+		return Optional.ofNullable(optional).get()
+		.orElseThrow(() -> new EntregaException(HttpStatus.NOT_FOUND, Constants.ITEM_NOT_FOUND));
+	}
+
+	@Override
+	public List<AvaliacaoDTO> consultarPorCliente(String token) throws GenericException, EntregaException {
+		String idCliente = Util.getPagameterToken(token, "idCadastro");
+
+		Optional<List<Avaliacao>> optional = avaliacaoRepository.findByIdCliente(idCliente);
+		List<Avaliacao> avaliacoes = validarAvaliacaoList(optional);
+		
+		Type listType = new TypeToken<List<AvaliacaoDTO>>(){}.getType();
+		List<AvaliacaoDTO> avaliacoesDTO = modelMapper().map(avaliacoes, listType);
+
+		return avaliacoesDTO;
 	}
 }

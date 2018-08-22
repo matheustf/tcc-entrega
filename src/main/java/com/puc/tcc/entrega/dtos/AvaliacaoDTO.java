@@ -15,10 +15,9 @@ public class AvaliacaoDTO {
 
 	private String id;
 
-	@NotNull()
-	private String idCliente;
-	
 	private String codigoDaAvaliacao;
+	
+	private String idCliente;
 	
 	@NotNull()
 	private String idPedido;
