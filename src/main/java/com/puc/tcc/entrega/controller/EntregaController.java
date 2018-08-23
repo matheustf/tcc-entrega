@@ -32,20 +32,11 @@ public class EntregaController {
 	}
 	
 	@GetMapping()
-	@RequestMapping("")
 	public ResponseEntity<List<EntregaDTO>> buscarTodos() {
 
 		List<EntregaDTO> listEntregas = entregaService.buscarTodos();
 
 		return new ResponseEntity<List<EntregaDTO>>(listEntregas, HttpStatus.OK);
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<EntregaDTO> consultar(@PathVariable(value = "id") String idEntrega) throws EntregaException {
-
-		EntregaDTO entregaDTO = entregaService.consultar(idEntrega);
-
-		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.OK);
 	}
 
 	@PostMapping("")
@@ -61,6 +52,15 @@ public class EntregaController {
 		EntregaDTO entregaDTO = entregaService.atualizar(id, entregaDTODetails);
 
 		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.NO_CONTENT);
+	}
+	
+
+	@GetMapping("/{id}")
+	public ResponseEntity<EntregaDTO> consultar(@PathVariable(value = "id") String idEntrega) throws EntregaException {
+
+		EntregaDTO entregaDTO = entregaService.consultar(idEntrega);
+
+		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")

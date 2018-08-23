@@ -11,7 +11,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.http.HttpStatus;
 
 import com.puc.tcc.entrega.consts.Constants;
-import com.puc.tcc.entrega.exceptions.GenericException;
+import com.puc.tcc.entrega.exceptions.EntregaException;
 
 public class Util {
 
@@ -41,7 +41,7 @@ public class Util {
 
 	}
 
-	public static String getPagameterToken(String token, String tokenParameter) throws GenericException {
+	public static String getPagameterToken(String token, String tokenParameter) throws EntregaException {
 		try {
 			System.out.println(token);
 			String[] pieces = token.split("\\.");
@@ -51,7 +51,7 @@ public class Util {
 			return getParameter(header, tokenParameter);
 
 		} catch (Exception e) {
-			throw new GenericException(HttpStatus.INTERNAL_SERVER_ERROR, Constants.SERVER_ERROR);
+			throw new EntregaException(HttpStatus.INTERNAL_SERVER_ERROR, Constants.SERVER_ERROR);
 		}
 	}
 
