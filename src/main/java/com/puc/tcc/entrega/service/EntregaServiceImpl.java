@@ -17,6 +17,7 @@ import com.puc.tcc.entrega.consts.Constants;
 import com.puc.tcc.entrega.dtos.EntregaDTO;
 import com.puc.tcc.entrega.enums.StatusDaEntrega;
 import com.puc.tcc.entrega.exceptions.EntregaException;
+import com.puc.tcc.entrega.mockcorreios.MockCorreiosComponent;
 import com.puc.tcc.entrega.model.Entrega;
 import com.puc.tcc.entrega.model.HistoricoDeEntrega;
 import com.puc.tcc.entrega.rabbitmq.RabbitMQComponent;
@@ -27,23 +28,27 @@ import com.puc.tcc.entrega.utils.Util;
 public class EntregaServiceImpl implements EntregaService {
 
 	EntregaRepository entregaRepository;
-	
+
 	RabbitMQComponent rabbitMQComponent;
 
+	MockCorreiosComponent mockCorreiosComponent;
+
 	@Autowired
-	public EntregaServiceImpl(EntregaRepository entregaRepository, RabbitMQComponent rabbitMQComponent) {
+	public EntregaServiceImpl(EntregaRepository entregaRepository, RabbitMQComponent rabbitMQComponent,
+			MockCorreiosComponent mockCorreiosComponent) {
 		this.entregaRepository = entregaRepository;
 		this.rabbitMQComponent = rabbitMQComponent;
+		this.mockCorreiosComponent = mockCorreiosComponent;
 	}
 
 	@Override
 	public EntregaDTO consultar(String id) throws EntregaException {
-		
+
 		Optional<Entrega> optional = entregaRepository.findById(id);
 		Entrega entrega = validarEntrega(optional);
-		
+
 		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
-		
+
 		return entregaDTO;
 	}
 
@@ -52,7 +57,8 @@ public class EntregaServiceImpl implements EntregaService {
 
 		List<Entrega> entregas = (List<Entrega>) entregaRepository.findAll();
 
-		Type listType = new TypeToken<List<EntregaDTO>>(){}.getType();
+		Type listType = new TypeToken<List<EntregaDTO>>() {
+		}.getType();
 		List<EntregaDTO> entregasDTO = modelMapper().map(entregas, listType);
 
 		return entregasDTO;
@@ -61,31 +67,43 @@ public class EntregaServiceImpl implements EntregaService {
 	@Override
 	public EntregaDTO incluir(EntregaDTO entregaDTO) {
 		Entrega entrega = modelMapper().map(entregaDTO, Entrega.class);
-		
+
 		StatusDaEntrega statusDaEntrega = StatusDaEntrega.valueOf(entregaDTO.getStatusDaEntrega());
-		
-		HistoricoDeEntrega historico = HistoricoDeEntrega
-				.builder()
-				.data(Util.dataNow())
-				.statusDaEntrega(statusDaEntrega)
-				.build();
+
+		HistoricoDeEntrega historico = HistoricoDeEntrega.builder().data(Util.dataNow())
+				.statusDaEntrega(statusDaEntrega).build();
 
 		entrega.setHistoricoDeEntrega(Arrays.asList(historico));
 		entrega.setStatusDaEntrega(statusDaEntrega);
-		entrega.setCodigoDaEntrega(Util.gerarCodigo("ENTREGA",5).toUpperCase());
-		
+		entrega.setCodigoDaEntrega(Util.gerarCodigo("ENTREGA", 5).toUpperCase());
+
 		entregaRepository.save(entrega);
 		rabbitMQComponent.sendEntrega(entrega);
-		
+
 		return modelMapper().map(entrega, EntregaDTO.class);
 	}
 
 	@Override
-	public EntregaDTO atualizar(String id, EntregaDTO entregaDTODetails) throws EntregaException {
+	public EntregaDTO despacharProduto(String codigoDaEntrega, String codigoDeRastreio) throws EntregaException {
+
+		Optional<Entrega> optional = entregaRepository.findByCodigoDaEntrega(codigoDaEntrega);
+		Entrega entrega = validarEntrega(optional);
+
+		entrega.setCodigoDeRastreio(codigoDeRastreio);
 		
+		entregaRepository.save(entrega);
+
+		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
+
+		return entregaDTO;
+	}
+
+	@Override
+	public EntregaDTO atualizar(String id, EntregaDTO entregaDTODetails) throws EntregaException {
+
 		Optional<Entrega> optional = entregaRepository.findById(id);
 		Entrega entrega = validarEntrega(optional);
-		
+
 		Entrega entregaDetails = modelMapper().map(entregaDTODetails, Entrega.class);
 
 		entrega = entrega.update(entrega, entregaDetails);
@@ -96,15 +114,15 @@ public class EntregaServiceImpl implements EntregaService {
 
 		return entregaDTO;
 	}
-
+	
 	@Override
 	public ResponseEntity<EntregaDTO> deletar(String id) throws EntregaException {
-		
+
 		Optional<Entrega> optional = entregaRepository.findById(id);
 		validarEntrega(optional);
-		
+
 		entregaRepository.deleteById(id);
-		
+
 		return ResponseEntity.noContent().build();
 	}
 
@@ -112,9 +130,10 @@ public class EntregaServiceImpl implements EntregaService {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
-	
+
 	private Entrega validarEntrega(Optional<Entrega> optional) throws EntregaException {
 		return Optional.ofNullable(optional).get()
-		.orElseThrow(() -> new EntregaException(HttpStatus.NOT_FOUND, Constants.ITEM_NOT_FOUND));
+				.orElseThrow(() -> new EntregaException(HttpStatus.NOT_FOUND, Constants.ITEM_NOT_FOUND));
 	}
+
 }

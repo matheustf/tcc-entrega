@@ -19,4 +19,6 @@ public interface EntregaService {
 
 	List<EntregaDTO> buscarTodos();
 
+	EntregaDTO despacharProduto(String codigoDaEntrega, String codigoDeRastreio) throws EntregaException;
+
 }

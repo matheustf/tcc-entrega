@@ -31,6 +31,8 @@ public class Entrega implements Serializable{
 	@NotNull
 	private String codigoDaEntrega;
 
+	private String codigoDeRastreio;
+
 	@NotNull
 	private String idCliente;
 	

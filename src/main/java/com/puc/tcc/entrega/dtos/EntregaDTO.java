@@ -22,6 +22,8 @@ public class EntregaDTO {
 	
 	private String codigoDaEntrega;
 	
+	private String codigoDeRastreio;
+	
 	@NotNull()
 	private String idFornecedor;
 	

@@ -71,4 +71,11 @@ public class EntregaController {
 		return response;
 	}
 
+	@PostMapping("despachar/entrega/{codigoDaEntrega}/codigoDeRastreio/{codigoDeRastreio}")
+	public ResponseEntity<EntregaDTO> incluir(@PathVariable(value = "codigoDaEntrega") String codigoDaEntrega, @PathVariable(value = "codigoDeRastreio") String codigoDeRastreio) throws EntregaException {
+
+		EntregaDTO entregaDTO = entregaService.despacharProduto(codigoDaEntrega, codigoDeRastreio);
+		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.CREATED);
+	}
+	
 }
