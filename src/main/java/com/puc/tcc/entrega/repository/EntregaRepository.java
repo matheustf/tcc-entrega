@@ -13,4 +13,6 @@ public interface EntregaRepository extends MongoRepository<Entrega, String> {
 
 	Optional<Entrega> findByCodigoDaEntrega(String codigoDaEntrega);
 
+	Optional<Entrega> findByIdCompra(String idCompra);
+
 }

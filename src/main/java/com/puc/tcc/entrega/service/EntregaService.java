@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.puc.tcc.entrega.dtos.DespacheDTO;
 import com.puc.tcc.entrega.dtos.EntregaDTO;
 import com.puc.tcc.entrega.exceptions.EntregaException;
 
@@ -19,6 +20,10 @@ public interface EntregaService {
 
 	List<EntregaDTO> buscarTodos();
 
-	EntregaDTO despacharProduto(String codigoDaEntrega, String codigoDeRastreio) throws EntregaException;
+	void incluirList(List<EntregaDTO> entregasDTO);
+
+	EntregaDTO consultarPorIdCompra(String idCompra) throws EntregaException;
+
+	EntregaDTO despacharProduto(String codigoDaEntrega, DespacheDTO despache) throws EntregaException;
 
 }

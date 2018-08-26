@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.puc.tcc.entrega.dtos.DespacheDTO;
 import com.puc.tcc.entrega.dtos.EntregaDTO;
 import com.puc.tcc.entrega.exceptions.EntregaException;
 import com.puc.tcc.entrega.service.EntregaService;
@@ -45,6 +46,12 @@ public class EntregaController {
 		EntregaDTO responseEntregaDTO = entregaService.incluir(entregaDTO);
 		return new ResponseEntity<EntregaDTO>(responseEntregaDTO, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/list")
+	public ResponseEntity<EntregaDTO> incluirEntregas(@RequestBody @Valid List<EntregaDTO> entregasDTO) {
+		entregaService.incluirList(entregasDTO);
+		return new ResponseEntity<EntregaDTO>(HttpStatus.OK);
+	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<EntregaDTO> atualizar(@PathVariable(value = "id") String id, @RequestBody @Valid EntregaDTO entregaDTODetails) throws EntregaException {
@@ -62,6 +69,14 @@ public class EntregaController {
 
 		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.OK);
 	}
+	
+	@GetMapping("/idCompra/{idCompra}")
+	public ResponseEntity<EntregaDTO> consultarPorIdCompra(@PathVariable(value = "idCompra") String idCompra) throws EntregaException {
+
+		EntregaDTO entregaDTO = entregaService.consultarPorIdCompra(idCompra);
+
+		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.OK);
+	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<EntregaDTO> deletar(@PathVariable(value = "id") String id) throws EntregaException {
@@ -71,10 +86,10 @@ public class EntregaController {
 		return response;
 	}
 
-	@PostMapping("despachar/entrega/{codigoDaEntrega}/codigoDeRastreio/{codigoDeRastreio}")
-	public ResponseEntity<EntregaDTO> incluir(@PathVariable(value = "codigoDaEntrega") String codigoDaEntrega, @PathVariable(value = "codigoDeRastreio") String codigoDeRastreio) throws EntregaException {
+	@PostMapping("/{codigoDaEntrega}/despachar")
+	public ResponseEntity<EntregaDTO> incluir(@PathVariable(value = "codigoDaEntrega") String codigoDaEntrega, @RequestBody DespacheDTO despache) throws EntregaException {
 
-		EntregaDTO entregaDTO = entregaService.despacharProduto(codigoDaEntrega, codigoDeRastreio);
+		EntregaDTO entregaDTO = entregaService.despacharProduto(codigoDaEntrega, despache);
 		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.CREATED);
 	}
 	

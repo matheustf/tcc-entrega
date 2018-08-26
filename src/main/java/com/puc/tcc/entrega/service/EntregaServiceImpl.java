@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.reflect.TypeToken;
 import com.puc.tcc.entrega.consts.Constants;
+import com.puc.tcc.entrega.dtos.DespacheDTO;
 import com.puc.tcc.entrega.dtos.EntregaDTO;
 import com.puc.tcc.entrega.enums.StatusDaEntrega;
 import com.puc.tcc.entrega.exceptions.EntregaException;
@@ -84,14 +85,16 @@ public class EntregaServiceImpl implements EntregaService {
 	}
 
 	@Override
-	public EntregaDTO despacharProduto(String codigoDaEntrega, String codigoDeRastreio) throws EntregaException {
+	public EntregaDTO despacharProduto(String codigoDaEntrega, DespacheDTO despache) throws EntregaException {
 
 		Optional<Entrega> optional = entregaRepository.findByCodigoDaEntrega(codigoDaEntrega);
 		Entrega entrega = validarEntrega(optional);
 
-		entrega.setCodigoDeRastreio(codigoDeRastreio);
+		entrega.setCodigoDeRastreio(despache.getCodigoDeRastreio());
 		
 		entregaRepository.save(entrega);
+
+		mockCorreiosComponent.mockar(entrega.getCodigoDeRastreio(), StatusDaEntrega.ENVIADO.toString());
 
 		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
 
@@ -134,6 +137,25 @@ public class EntregaServiceImpl implements EntregaService {
 	private Entrega validarEntrega(Optional<Entrega> optional) throws EntregaException {
 		return Optional.ofNullable(optional).get()
 				.orElseThrow(() -> new EntregaException(HttpStatus.NOT_FOUND, Constants.ITEM_NOT_FOUND));
+	}
+
+	@Override
+	public void incluirList(List<EntregaDTO> entregasDTO) {
+		for (EntregaDTO entregaDTO : entregasDTO) {
+			incluir(entregaDTO);
+		}
+		
+	}
+
+	@Override
+	public EntregaDTO consultarPorIdCompra(String idCompra) throws EntregaException {
+		Optional<Entrega> optional = entregaRepository.findByIdCompra(idCompra);
+		Entrega entrega = validarEntrega(optional);
+		entrega.getHistoricoDeEntrega();
+
+		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
+
+		return entregaDTO;
 	}
 
 }
