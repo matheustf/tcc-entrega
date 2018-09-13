@@ -2,6 +2,7 @@ package com.puc.tcc.entrega.service;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,11 @@ public class EntregaServiceImpl implements EntregaService {
 
 		Optional<Entrega> optional = entregaRepository.findById(id);
 		Entrega entrega = validarEntrega(optional);
+		
+		Collections.sort(entrega.getHistoricoDeEntrega());
 
+		System.out.println("Sort entrega consulta");
+		
 		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
 
 		return entregaDTO;
@@ -152,6 +157,10 @@ public class EntregaServiceImpl implements EntregaService {
 		Optional<Entrega> optional = entregaRepository.findByIdCompra(idCompra);
 		Entrega entrega = validarEntrega(optional);
 		entrega.getHistoricoDeEntrega();
+		
+		Collections.sort(entrega.getHistoricoDeEntrega());
+		
+		System.out.println("Sort entrega consulta por compra");
 
 		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
 
