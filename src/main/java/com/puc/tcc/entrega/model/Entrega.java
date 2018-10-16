@@ -21,9 +21,6 @@ import lombok.NoArgsConstructor;
 @Document
 public class Entrega implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2043008054923050692L;
 
 	private String id;
@@ -35,6 +32,12 @@ public class Entrega implements Serializable{
 
 	@NotNull
 	private String idCliente;
+	
+	@NotNull
+	private String emailCliente;
+	
+	@NotNull()
+	private String nomeDoCliente;
 	
 	@NotNull
 	private String idFornecedor;
@@ -49,7 +52,29 @@ public class Entrega implements Serializable{
 	private StatusDaEntrega statusDaEntrega;
 	
 	@NotNull
+	private String nomeDoProduto;
+	
+	@NotNull
+	private int quantidade;
+	
+	@NotNull
+	private String urlFornecedor;
+	
+	@NotNull
+	private String modelo;
+	
+	@NotNull
+	private String marca;
+	
+	@NotNull
+	private Endereco endereco;
+	
+	@NotNull
 	private List<HistoricoDeEntrega> historicoDeEntrega;
+	
+	public void addHistoricoDeEntrega(HistoricoDeEntrega historicoDeEntrega){
+		this.historicoDeEntrega.add(historicoDeEntrega);
+	}
 	
 	public Entrega update(Entrega entregaDoPedido, Entrega detailsEntregaDoPedido) {
 		entregaDoPedido.setEstimativaDeEntrega(detailsEntregaDoPedido.getEstimativaDeEntrega());

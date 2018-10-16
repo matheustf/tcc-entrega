@@ -70,7 +70,7 @@ public class EntregaController {
 		return new ResponseEntity<EntregaDTO>(entregaDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping("/idCompra/{idCompra}")
+	@GetMapping("/codigoDaCompra/{idCompra}")
 	public ResponseEntity<EntregaDTO> consultarPorIdCompra(@PathVariable(value = "idCompra") String idCompra) throws EntregaException {
 
 		EntregaDTO entregaDTO = entregaService.consultarPorIdCompra(idCompra);

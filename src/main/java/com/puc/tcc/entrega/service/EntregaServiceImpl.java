@@ -14,12 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.reflect.TypeToken;
+import com.puc.tcc.entrega.component.CorreiosComponent;
+import com.puc.tcc.entrega.component.SendEmailComponent;
+import com.puc.tcc.entrega.component.SendNotificationComponent;
 import com.puc.tcc.entrega.consts.Constants;
 import com.puc.tcc.entrega.dtos.DespacheDTO;
 import com.puc.tcc.entrega.dtos.EntregaDTO;
 import com.puc.tcc.entrega.enums.StatusDaEntrega;
 import com.puc.tcc.entrega.exceptions.EntregaException;
-import com.puc.tcc.entrega.mockcorreios.MockCorreiosComponent;
 import com.puc.tcc.entrega.model.Entrega;
 import com.puc.tcc.entrega.model.HistoricoDeEntrega;
 import com.puc.tcc.entrega.rabbitmq.RabbitMQComponent;
@@ -33,14 +35,20 @@ public class EntregaServiceImpl implements EntregaService {
 
 	RabbitMQComponent rabbitMQComponent;
 
-	MockCorreiosComponent mockCorreiosComponent;
-
+	CorreiosComponent correiosComponent;
+	
+	SendEmailComponent sendEmailComponent;
+	
+	SendNotificationComponent sendNotificationComponent;
+	
 	@Autowired
 	public EntregaServiceImpl(EntregaRepository entregaRepository, RabbitMQComponent rabbitMQComponent,
-			MockCorreiosComponent mockCorreiosComponent) {
+			CorreiosComponent correiosComponent, SendEmailComponent sendEmailComponent, SendNotificationComponent sendNotificationComponent) {
 		this.entregaRepository = entregaRepository;
 		this.rabbitMQComponent = rabbitMQComponent;
-		this.mockCorreiosComponent = mockCorreiosComponent;
+		this.correiosComponent = correiosComponent;
+		this.sendEmailComponent = sendEmailComponent;
+		this.sendNotificationComponent = sendNotificationComponent;
 	}
 
 	@Override
@@ -85,6 +93,9 @@ public class EntregaServiceImpl implements EntregaService {
 
 		entregaRepository.save(entrega);
 		rabbitMQComponent.sendEntrega(entrega);
+		
+		sendNotificationComponent.sendNotification(entrega);
+		sendEmailComponent.sendEmail(entrega);
 
 		return modelMapper().map(entrega, EntregaDTO.class);
 	}
@@ -99,7 +110,7 @@ public class EntregaServiceImpl implements EntregaService {
 		
 		entregaRepository.save(entrega);
 
-		mockCorreiosComponent.mockar(entrega.getCodigoDeRastreio(), StatusDaEntrega.ENVIADO.toString());
+		correiosComponent.mockar(entrega.getCodigoDeRastreio(), StatusDaEntrega.ENVIADO.toString());
 
 		EntregaDTO entregaDTO = modelMapper().map(entrega, EntregaDTO.class);
 

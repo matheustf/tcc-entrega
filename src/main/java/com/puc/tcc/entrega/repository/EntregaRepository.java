@@ -12,6 +12,8 @@ import com.puc.tcc.entrega.model.Entrega;
 public interface EntregaRepository extends MongoRepository<Entrega, String> {
 
 	Optional<Entrega> findByCodigoDaEntrega(String codigoDaEntrega);
+	
+	Optional<Entrega> findByCodigoDeRastreio(String codigoDeRastreio);
 
 	Optional<Entrega> findByIdCompra(String idCompra);
 

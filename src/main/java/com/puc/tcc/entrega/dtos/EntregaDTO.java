@@ -20,6 +20,12 @@ public class EntregaDTO {
 	@NotNull()
 	private String idCliente;
 	
+	@NotNull()
+	private String emailCliente;
+	
+	@NotNull()
+	private String nomeDoCliente;
+	
 	private String codigoDaEntrega;
 	
 	private String codigoDeRastreio;
@@ -35,6 +41,20 @@ public class EntregaDTO {
 	
 	private String statusDaEntrega;
 	
+	private String nomeDoProduto;
+	
+	private String modelo;
+	
+	private String marca;
+	
+	private int quantidade;
+	
+	private EnderecoDTO endereco;
+	
 	private List<HistoricoDeEntregaDTO> historicoDeEntrega;
+	
+	private String urlFornecedor;
+	
+	private String emailFornecedor;
 	
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.stereotype.Component;
 
+import com.puc.tcc.entrega.dtos.Email;
 import com.puc.tcc.entrega.model.Entrega;
 import com.puc.tcc.entrega.rabbitmq.config.RobbitMqConfig;
 
@@ -27,6 +28,15 @@ public class RabbitMQComponentImpl implements RabbitMQComponent{
 		System.out.println(new Date());
 		rabbitMessagingTemplate.convertAndSend(RobbitMqConfig.ROUTING_ENTREGA, entrega);
 	    System.out.println("Is listener returned OK - Entrega::: ");
+	}
+
+	@Override
+	public void sendEmail(Email email) {
+		this.rabbitMessagingTemplate.setMessageConverter(this.mappingJackson2MessageConverter);
+
+		System.out.println(new Date());
+		rabbitMessagingTemplate.convertAndSend(RobbitMqConfig.ROUTING_EMAIL, email);
+	    System.out.println("Is listener returned OK - Email::: ");
 	}
 
 }

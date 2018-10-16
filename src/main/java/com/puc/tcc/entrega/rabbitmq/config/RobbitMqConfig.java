@@ -12,10 +12,17 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 public class RobbitMqConfig {
 
 	public static final String ROUTING_ENTREGA = "my.queue.entregas";
+	
+	public static final String ROUTING_EMAIL = "my.queue.email";
 
 	@Bean
 	Queue queueEntregas() {
 		return new Queue(ROUTING_ENTREGA, true);
+	}
+	
+	@Bean
+	Queue queueEmail() {
+		return new Queue(ROUTING_EMAIL, true);
 	}
 	
 	@Bean
@@ -26,6 +33,11 @@ public class RobbitMqConfig {
 	@Bean
 	Binding bindingExchangeEntregas(Queue queueEntregas, TopicExchange exchange) {
 		return BindingBuilder.bind(queueEntregas).to(exchange).with(ROUTING_ENTREGA);
+	}
+	
+	@Bean
+	Binding bindingExchangeEmail(Queue queueEmail, TopicExchange exchange) {
+		return BindingBuilder.bind(queueEmail).to(exchange).with(ROUTING_EMAIL);
 	}
 	
 	@Bean
